@@ -1,4 +1,4 @@
-import { Slider, Typography, Button } from '@mui/material';
+import { Slider, Typography, Button, Stack } from '@mui/material';
 import React, { useCallback, useState } from 'react'
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '../../utils/getCropImage';
@@ -25,64 +25,87 @@ const CropImage = () => {
                 croppedAreaPixels,
                 rotation
             )
-            console.log('donee', { croppedImage })
+            console.log('done', { croppedImage })
             setCroppedImage(croppedImage)
         } catch (e) {
             console.error(e)
         }
-    }, [croppedAreaPixels, rotation])
+    }, [croppedAreaPixels, rotation, selectedFile])
     // console.log("selectedFile", selectedFile);
     console.log("rotation", rotation);
     return (
         <>
-            <input
-                accept="image/*"
-                multiple={false}
-                type="file"
-                onChange={(event) => fileChangeHandler(event)}
-            />
-            <div className='input-image'>
-                <div style={{position: 'relative', height: 200, width: 250 }}>
+            <Stack justifyContent="center" alignItems="center" direction="column" spacing={2}>
 
-                    <Cropper
-                        image={selectedFile}
-                        crop={crop}
-                        rotation={rotation}
-                        zoom={zoom}
-                        aspect={4 / 3}
-                        onCropChange={setCrop}
-                        onRotationChange={setRotation}
-                        onCropComplete={onCropComplete}
-                        onZoomChange={setZoom}
-                        objectFit="horizontal-cover"
-                    />
-                </div>
-                <Typography
-                    variant="overline"
-                >
-                    Rotation
-                </Typography>
-                <Slider
-                    value={rotation}
-                    min={0}
-                    max={360}
-                    step={1}
-                    aria-labelledby="Rotation"
-                    onChange={(e, rotation) => setRotation(Number(rotation))}
+                <input
+                    accept="image/*"
+                    multiple={false}
+                    type="file"
+                    onChange={(event) => fileChangeHandler(event)}
                 />
-                <Button
-                    onClick={showCroppedImage}
-                    variant="contained"
-                // color="primary"
-                >
-                    Show Result
-                </Button>
-            </div>
-            <div style={{ height: "400px", width: "400px" }}>
+                <Stack >
+                    {selectedFile && <Stack position="relative" width={250} height={200} >
+                        <Cropper
+                            image={selectedFile}
+                            crop={crop}
+                            rotation={rotation}
+                            zoom={zoom}
+                            aspect={4 / 3}
+                            onCropChange={setCrop}
+                            onRotationChange={setRotation}
+                            onCropComplete={onCropComplete}
+                            onZoomChange={setZoom}
+                            objectFit="horizontal-cover"
+                        />
+                    </Stack>}
+                    <Stack direction="column">
+                        <Stack>
 
-                {console.log("cropped Images", croppedImage)}
-                {croppedImage && <img height="100%" width="100%" src={croppedImage} alt="cropped" />}
-            </div>
+                            <Typography
+                                variant="overline"
+                            >
+                                Rotation
+                            </Typography>
+                            <Slider
+                                value={rotation}
+                                min={0}
+                                max={360}
+                                step={1}
+                                aria-labelledby="Rotation"
+                                onChange={(e, rotation) => setRotation(Number(rotation))}
+                            />
+                        </Stack>
+                        <Stack>
+
+                            <Typography
+                                variant="overline"
+                            >
+                                Zoom
+                            </Typography>
+                            <Slider
+                                value={zoom}
+                                min={1}
+                                max={5}
+                                step={1}
+                                aria-labelledby="Zoom"
+                                onChange={(e, zoom) => setZoom(Number(zoom))}
+                            />
+                        </Stack>
+                        <Button
+                            onClick={showCroppedImage}
+                            variant="contained"
+                        // color="primary"
+                        >
+                            Show Result
+                        </Button>
+                    </Stack>
+                </Stack>
+                <Stack width={400} height={300} >
+                    {/* {console.log("cropped Images", croppedImage)} */}
+                    {croppedImage && <img height="100%" width="100%" src={croppedImage} alt="cropped" />}
+                </Stack>
+            </Stack>
+
         </>
     )
 }
